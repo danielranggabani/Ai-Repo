@@ -55,6 +55,7 @@ Pastikan Anda telah menginstal:
    NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 
    # Midtrans (Payment)
+   MIDTRANS_MERCHANT_ID=your-merchant-id  <-- WAJIB DIISI
    MIDTRANS_SERVER_KEY=your-server-key
    MIDTRANS_CLIENT_KEY=your-client-key
 
@@ -64,14 +65,16 @@ Pastikan Anda telah menginstal:
 
 4. **Setup Database (Neon)**
 
-   Jalankan script SQL berikut di dashboard Neon Anda atau gunakan tool migrasi pilihan Anda untuk membuat tabel yang diperlukan:
+   Anda perlu membuat tabel database. Script skema lengkap tersedia di file `schema.sql`.
 
-   ```sql
-   -- Lihat schema lengkap di file schema.sql atau dokumentasi
-   -- Tabel utama: profiles, workspaces, projects, transactions, credit_ledger
-   ```
+   Anda dapat menjalankannya melalui Dashboard Neon (SQL Editor) atau menggunakan perintah psql jika terkoneksi.
 
-   *(Catatan: Aplikasi ini menggunakan driver serverless Neon, pastikan DATABASE_URL valid)*
+   Isi file `schema.sql` mencakup tabel:
+   - `profiles`
+   - `workspaces`
+   - `projects`
+   - `transactions`
+   - `credit_ledger`
 
 5. **Jalankan Development Server**
 
@@ -87,6 +90,13 @@ Pastikan Anda telah menginstal:
 - `components/`: Komponen UI (Shadcn UI) dan Custom Node React Flow.
 - `stores/`: State management menggunakan Zustand.
 - `lib/`: Utilitas dan konfigurasi library (Neon, utils).
+- `schema.sql`: Definisi skema database.
+- `postcss.config.js`: Konfigurasi Tailwind CSS (wajib ada agar style muncul).
+
+## Catatan Troubleshooting
+
+- **Style Tidak Muncul?**: Pastikan `postcss.config.js` ada di root project. Jika tidak, buat file tersebut (sudah disertakan dalam perbaikan ini).
+- **Midtrans Error**: Pastikan `MIDTRANS_MERCHANT_ID` sudah diisi di `.env.local` sesuai dengan dashboard Midtrans Anda.
 
 ## Tech Stack
 

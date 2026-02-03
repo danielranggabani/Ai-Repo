@@ -12,11 +12,20 @@ export async function POST(req: Request) {
     const signatureKey = notification.signature_key;
     const transactionStatus = notification.transaction_status;
     const fraudStatus = notification.fraud_status;
+    const merchantId = notification.merchant_id;
 
     const serverKey = process.env.MIDTRANS_SERVER_KEY;
-    if (!serverKey) {
-      console.error('MIDTRANS_SERVER_KEY is missing');
+    const expectedMerchantId = process.env.MIDTRANS_MERCHANT_ID;
+
+    if (!serverKey || !expectedMerchantId) {
+      console.error('MIDTRANS configuration is missing');
       return NextResponse.json({ error: 'Configuration Error' }, { status: 500 });
+    }
+
+    // Verify Merchant ID
+    if (merchantId !== expectedMerchantId) {
+      console.error('Invalid Merchant ID:', merchantId);
+      return NextResponse.json({ error: 'Invalid Merchant ID' }, { status: 403 });
     }
 
     // Validate Signature
@@ -63,8 +72,6 @@ export async function POST(req: Request) {
     }
 
     // If successful, add credits
-    // Ensure we don't add credits twice if status was already success (though Midtrans might send multiple notifications)
-    // For this MVP we just add. In production, check if credits were already added.
     if (status === 'success') {
        // Check if we already processed this
        // A robust way is to check the previous status, but here we just blindly add for now or check if we have a ledger entry?
